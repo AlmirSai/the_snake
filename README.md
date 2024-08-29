@@ -7,7 +7,7 @@ To set up this project locally, follow these steps:
 ### 1. Clone the repository:
 ```bash
 git clone https://github.com/AlmirSai/the_snake
-cd the snake
+cd the_snake
 ```
 ### 2. Set up venv
 ```bash
