@@ -55,7 +55,7 @@ class GameObject:
 
     def draw(self) -> None:
         """Method for drawing objects"""
-        self.draw_cell(self.position, self.body_color)
+        pass
 
     def draw_cell(self, position, color) -> None:
         """Method for drawing single cell"""
@@ -75,15 +75,16 @@ class Apple(GameObject):
         """Drawing object Apple"""
         self.draw_cell(self.position, self.body_color)
 
-    def randomize_position(self) -> None:
+    def randomize_position(self, snake_positions=None) -> None:
         """Method for randomizing position of Apple"""
         while True:
             self.position = (
                 randint(0, GRID_WIDTH - 1) * GRID_SIZE,
                 randint(0, GRID_HEIGHT - 1) * GRID_SIZE
             )
-            if self.position != DEFAULT_POSITION:
-                break
+            if snake_positions and self.position in snake_positions:
+                continue
+            break
 
 
 class Snake(GameObject):
@@ -130,9 +131,10 @@ class Snake(GameObject):
 
     def draw(self) -> None:
         """Method for drawing Snake"""
-        head_rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(screen, self.body_color, head_rect)
-        pygame.draw.rect(screen, BORDER_COLOR, head_rect, 1)
+        index = 0
+        while index < len(self.positions):
+            self.draw_cell(self.positions[index], self.body_color)
+            index += 1
 
         if self.last:
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
@@ -166,6 +168,7 @@ def main() -> None:
     while True:
         clock.tick(SPEED)
         handle_keys(snake)
+        snake.move()
         snake.update_direction()
 
         if snake.get_head_position() in snake.positions[1:]:
@@ -174,9 +177,9 @@ def main() -> None:
 
         if snake.get_head_position() == apple.position:
             snake.length += 1
-            apple.randomize_position()
-        else:
-            snake.move()
+            # Add checking position of apple and snake
+            # if snake_position in apple_position -> new_position
+            apple.randomize_position(snake_positions=snake.positions)
 
         snake.draw()
         apple.draw()
