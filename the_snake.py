@@ -123,6 +123,8 @@ class Snake(GameObject):
 
     def move(self) -> None:
         """Method for moving Snake position"""
+        self.clear_last_position()
+
         new_position = self.get_head_new_position()
         self.positions.insert(0, new_position)
 
@@ -131,14 +133,15 @@ class Snake(GameObject):
 
     def draw(self) -> None:
         """Method for drawing Snake"""
-        index = 0
-        while index < len(self.positions):
-            self.draw_cell(self.positions[index], self.body_color)
-            index += 1
+        # Can you help me with this? How I can update body
+        # of Snake and don't use 'for'
+        for position in self.positions:
+            self.draw_cell(position, self.body_color)
 
+    def clear_last_position(self) -> None:
+        """Method for clear last position of Snake"""
         if self.last:
-            last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
+            self.draw_cell(self.last, BOARD_BACKGROUND_COLOR)
 
 
 def handle_keys(game_object) -> None:
@@ -181,6 +184,7 @@ def main() -> None:
             # if snake_position in apple_position -> new_position
             apple.randomize_position(snake_positions=snake.positions)
 
+        screen.fill(BOARD_BACKGROUND_COLOR)
         snake.draw()
         apple.draw()
         pygame.display.update()
