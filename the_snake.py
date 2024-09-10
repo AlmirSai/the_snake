@@ -56,7 +56,7 @@ class GameObject:
     def draw(self) -> None:
         """Method for drawing objects"""
         pass
-
+    
     def draw_cell(self, position, color) -> None:
         """Method for drawing single cell"""
         rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
@@ -88,60 +88,51 @@ class Apple(GameObject):
 
 
 class Snake(GameObject):
-    """CLass for logic of Snake"""
+    """Class for the logic of Snake"""
 
     def __init__(self) -> None:
         super().__init__(color=SNAKE_COLOR)
         self.reset()
 
     def reset(self) -> None:
-        """Method for reset Snake"""
+        """Method for resetting Snake"""
         self.length = 1
         self.positions = [DEFAULT_POSITION]
         self.direction = RIGHT
         self.next_direction = None
-        self.last = None
 
     def update_direction(self) -> None:
-        """Method for parsing next coordinates"""
+        """Method for updating the direction of the Snake"""
         if self.next_direction:
             self.direction = self.next_direction
             self.next_direction = None
 
     def get_head_position(self) -> tuple[int, int]:
-        """Method for parsing head position of Snake"""
+        """Method for getting the head position of Snake"""
         return self.positions[0]
 
     def get_head_new_position(self) -> tuple[int, int]:
-        """Method for drawing new position of snake head"""
-        currnt_x, currnt_y = self.get_head_position(), self.get_head_position()
-        direct_x, direct_y = self.direction
+        """Method for calculating the new position of the snake's head"""
+        current_x = self.get_head_position()
+        current_y = self.get_head_position()
+        direction_x, direction_y = self.direction
         return (
-            ((currnt_x[0] + (direct_x * GRID_SIZE)) % SCREEN_WIDTH),
-            (currnt_y[1] + (direct_y * GRID_SIZE)) % SCREEN_HEIGHT
+            (current_x[0] + (direction_x * GRID_SIZE)) % SCREEN_WIDTH,
+            (current_y[1] + (direction_y * GRID_SIZE)) % SCREEN_HEIGHT
         )
 
     def move(self) -> None:
-        """Method for moving Snake position"""
-        self.clear_last_position()
-
+        """Method for moving the Snake"""
         new_position = self.get_head_new_position()
         self.positions.insert(0, new_position)
 
         if len(self.positions) > self.length:
-            self.last = self.positions.pop()
+            self.positions.pop()
 
     def draw(self) -> None:
-        """Method for drawing Snake"""
-        # Can you help me with this? How I can update body
-        # of Snake and don't use 'for'
+        """Method for drawing the Snake"""
         for position in self.positions:
             self.draw_cell(position, self.body_color)
-
-    def clear_last_position(self) -> None:
-        """Method for clear last position of Snake"""
-        if self.last:
-            self.draw_cell(self.last, BOARD_BACKGROUND_COLOR)
 
 
 def handle_keys(game_object) -> None:
@@ -180,14 +171,14 @@ def main() -> None:
 
         if snake.get_head_position() == apple.position:
             snake.length += 1
-            # Add checking position of apple and snake
-            # if snake_position in apple_position -> new_position
             apple.randomize_position(snake_positions=snake.positions)
 
         screen.fill(BOARD_BACKGROUND_COLOR)
+
         snake.draw()
         apple.draw()
-        pygame.display.update()
+
+        pygame.display.flip()
 
 
 if __name__ == '__main__':
