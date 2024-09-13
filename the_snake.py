@@ -56,7 +56,7 @@ class GameObject:
     def draw(self) -> None:
         """Method for drawing objects"""
         pass
-    
+
     def draw_cell(self, position, color) -> None:
         """Method for drawing single cell"""
         rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
